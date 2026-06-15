@@ -1,0 +1,83 @@
+const songs = [
+{
+title:"Yes or No",
+artist:"Jungkook",
+src:"songs/song1.mp3",
+image:"images/img1.jpg"
+},
+{
+title:"Cruel Summer",
+artist:"Taylor Swift",
+src:"songs/song2.mp3",
+image:"images/img2.jpg"
+},
+{
+title:"The Fate of Ophelia",
+artist:"Taylor Swift",
+src:"songs/song3.mp3",
+image:"images/img3.jpg"
+}
+];
+
+let currentSong = 0;
+
+const audio = document.getElementById("audio");
+const songTitle = document.getElementById("songTitle");
+const artist = document.getElementById("artist");
+const songImage = document.getElementById("songImage");
+const progress = document.getElementById("progress");
+const volume = document.getElementById("volume");
+
+function loadSong(index){
+    currentSong = index;
+
+    audio.src = songs[index].src;
+    songTitle.textContent = songs[index].title;
+    artist.textContent = songs[index].artist;
+    songImage.src = songs[index].image;
+}
+
+function playSong(){
+    audio.play();
+}
+
+function pauseSong(){
+    audio.pause();
+}
+
+function nextSong(){
+    currentSong = (currentSong + 1) % songs.length;
+    loadSong(currentSong);
+    audio.play();
+}
+
+function prevSong(){
+    currentSong = (currentSong - 1 + songs.length) % songs.length;
+    loadSong(currentSong);
+    audio.play();
+}
+
+audio.addEventListener("timeupdate", () => {
+
+    progress.value =
+    (audio.currentTime / audio.duration) * 100 || 0;
+
+    document.getElementById("currentTime").textContent =
+    Math.floor(audio.currentTime);
+
+    document.getElementById("duration").textContent =
+    Math.floor(audio.duration) || 0;
+});
+
+progress.addEventListener("input", () => {
+    audio.currentTime =
+    (progress.value / 100) * audio.duration;
+});
+
+volume.addEventListener("input", () => {
+    audio.volume = volume.value;
+});
+
+audio.addEventListener("ended", nextSong);
+
+loadSong(0);
